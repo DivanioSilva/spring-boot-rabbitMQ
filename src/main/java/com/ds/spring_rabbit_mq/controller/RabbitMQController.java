@@ -16,10 +16,12 @@ public class RabbitMQController {
     private final RabbitMQSender rabbitMQSender;
 
     @GetMapping(value = "producer")
-    public String producer(@RequestParam("name") String name, @RequestParam("id") String id){
-        Employee emp = new EmployeeBuilder().setName(name).setId(id).build();
+    public String producer(@RequestParam("name") String name, @RequestParam("qtd") int qtd){
+        for (int i = 0; i < qtd; i++) {
+            Employee emp = new EmployeeBuilder().setName(name).setId(String.valueOf(i)).build();
 
-        rabbitMQSender.send(emp);
+            rabbitMQSender.send(emp);
+        }
         return "Message sent to the RabbitMQ successfully";
     }
 }
