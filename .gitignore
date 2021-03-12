@@ -2,3 +2,5 @@
 .idea/
 
 Receiver/.mvn/wrapper/
+
+Receiver/target/
