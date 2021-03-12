@@ -16,5 +16,6 @@ services:
 #  rabbit_go_net:
 #    driver: bridge
 
+#server url: http://localhost:15672
 #user: guest
 #pass: guest
