@@ -9,13 +9,49 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-#    networks:
-#      - rabbitmq_go_net
+  elasticsearch:
+    image: elasticsearch:7.7.0
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elknetwork
+  kibana:
+    image: kibana:7.7.0
+    container_name: kibana
+    hostname: kibana
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - elknetwork
+  logstash:
+    image: logstash:7.7.0
+    container_name: logstash
+    hostname: logstash
+    ports:
+      - 9600:9600
+      - 8089:8089
+    volumes:
+      - .\logstash:/usr/share/logstash/pipeline/
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - elknetwork
+networks:
+  elknetwork:
+    driver: bridge
 
-#networks:
-#  rabbit_go_net:
-#    driver: bridge
 
-#server url: http://localhost:15672
+    #server url: http://localhost:15672
 #user: guest
 #pass: guest
