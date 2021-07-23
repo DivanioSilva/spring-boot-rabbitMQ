@@ -8,3 +8,5 @@ Receiver/target/
 Sender/target/
 
 Sender/.mvn/wrapper/
+
+*.log
