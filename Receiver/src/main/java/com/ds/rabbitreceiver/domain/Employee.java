@@ -10,10 +10,11 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Employee.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
+        property = "@id", scope = Employee.class)
 public class Employee {
-    //@JsonProperty("name")
+    @JsonProperty("name")
     private String name;
-    //@JsonProperty("id")
+    @JsonProperty("id")
     private String id;
 }
