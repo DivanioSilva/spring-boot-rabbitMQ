@@ -9,6 +9,8 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - elknetwork
   elasticsearch:
     image: elasticsearch:7.7.0
     container_name: elasticsearch
@@ -58,6 +60,33 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
       networks:
         - elknetwork
+  receiver:
+    build:
+      context: ./Receiver
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - elknetwork
+  sender:
+    build:
+      context: ./Sender
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    ports:
+      - 8080:8080
+    depends_on:
+      - rabbitmq
+      - receiver
+    networks:
+      - elknetwork
 networks:
   elknetwork:
     driver: bridge
