@@ -84,7 +84,8 @@ services:
       - 8080:8080
     depends_on:
       - rabbitmq
-      - receiver
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
     networks:
       - elknetwork
 networks:
