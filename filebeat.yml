@@ -1,10 +1,40 @@
 filebeat.inputs:
-  - type: container
+  - input_type: container
+    enabled: true
     paths:
       - '/var/lib/docker/containers/*/*.log'
-  - type: docker
+    fields:
+      index: 'filebeat'
+  - input_type: log
+    enabled: true
+    fields:
+      index: 'ds_logs'
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    paths:
+      - '/*.log'
     containers.ids:
-      - '1df4afb6d7b1'
+      - 'f5e703413b17'
+  - type_type: log
+#    labels.dedot: true
+    fields:
+      index: 'ds_logsV2'
+    templates:
+      - condition:
+          contains:
+            container.labels.collect_logs_with_filebeat: "true"
+        config:
+          - type: container
+            format: docker
+            paths:
+              - "/var/lib/docker/containers/f5e703413b17/*.log"
+            processors:
+              - decode_json_fields:
+                  when.equals:
+                    docker.container.labels.decode_log_event_to_json_object: "true"
+                  fields: ["Employee"]
+                  target: ""
+                  overwrite_keys: true
 
 processors:
   - add_docker_metadata:
@@ -19,6 +49,17 @@ output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   indices:
     - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields:
+          index: "filebeat"
+    - index: "ds_logs-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields:
+          index: "ds_logs"
+    - index: "ds_logsV2-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields:
+          index: "ds_logsV2"
 
 logging.json: true
 logging.metrics.enabled: false
