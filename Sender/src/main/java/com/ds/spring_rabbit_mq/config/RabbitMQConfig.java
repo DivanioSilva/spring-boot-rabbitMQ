@@ -15,18 +15,58 @@ public class RabbitMQConfig {
     private final RabbitMQConfigProperties rabbitMQConfigProperties;
 
     @Bean
-    public Queue queue(){
-        return new Queue(rabbitMQConfigProperties.getQueue(), false);
+    public Queue saveFileQueue(){
+        return new Queue(RabbitMQQueues.SAVE_FILE.getValue(), true);
+    }
+
+    @Bean
+    public Queue deleteFileQueue(){
+        return new Queue(RabbitMQQueues.DELETE_FILE.getValue(), true);
+    }
+
+    @Bean
+    public Queue sendEmailQueue(){
+        return new Queue(RabbitMQQueues.SEND_EMAIL.getValue(), true);
+    }
+
+    @Bean
+    public Queue sendSMSQueue(){
+        return new Queue(RabbitMQQueues.SEND_SMS.getValue(), true);
+    }
+
+    @Bean
+    public Binding saveFileBinding(Queue saveFileQueue, DirectExchange directExchange){
+        return BindingBuilder.bind(saveFileQueue).to(directExchange).with(RabbitMQRoutingKey.SAVE_FILE.getValue());
+    }
+
+    @Bean
+    public Queue employeeQueue(){
+        return new Queue(RabbitMQQueues.EMPLOYEE.getValue(), true);
+    }
+
+    @Bean
+    public Binding employeeBinding(Queue employeeQueue, DirectExchange directExchange){
+        return BindingBuilder.bind(employeeQueue).to(directExchange).with(RabbitMQRoutingKey.EMPLOYEE.getValue());
+    }
+
+    @Bean
+    public Binding deleteFileBinding(Queue deleteFileQueue, DirectExchange directExchange){
+        return BindingBuilder.bind(deleteFileQueue).to(directExchange).with(RabbitMQRoutingKey.DELETE_FILE.getValue());
+    }
+
+    @Bean
+    public Binding sendEmailBinding(Queue sendEmailQueue, DirectExchange directExchange){
+        return BindingBuilder.bind(sendEmailQueue).to(directExchange).with(RabbitMQRoutingKey.SEND_EMAIL.getValue());
+    }
+
+    @Bean
+    public Binding sendSMSBinding(Queue sendSMSQueue, DirectExchange directExchange){
+        return BindingBuilder.bind(sendSMSQueue).to(directExchange).with(RabbitMQRoutingKey.SEND_SMS.getValue());
     }
 
     @Bean
     public DirectExchange directExchange(){
         return new DirectExchange(rabbitMQConfigProperties.getExchange());
-    }
-
-    @Bean
-    public Binding binding(Queue queue, DirectExchange directExchange){
-        return BindingBuilder.bind(queue).to(directExchange).with(rabbitMQConfigProperties.getRoutingKey());
     }
 
     @Bean

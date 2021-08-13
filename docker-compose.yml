@@ -67,7 +67,7 @@ services:
       args:
         buildno: 1
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
@@ -81,7 +81,7 @@ services:
       args:
         buildno: 1
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - rabbitmq
     environment:
