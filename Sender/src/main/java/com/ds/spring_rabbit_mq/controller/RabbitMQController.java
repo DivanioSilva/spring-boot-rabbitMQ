@@ -7,7 +7,6 @@ import com.ds.spring_rabbit_mq.domain.Employee;
 import com.ds.spring_rabbit_mq.domain.EmployeeBuilder;
 import com.ds.spring_rabbit_mq.service.RabbitMQSender;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -23,7 +22,8 @@ public class RabbitMQController {
             Records records =
                     new RecordsBuilder<Employee>()
                             .setContent(emp)
-                            .setRoutingKey(RabbitMQRoutingKey.EMPLOYEE.getValue()).createRecords();
+                            .setRoutingKey(RabbitMQRoutingKey.EMPLOYEE.getValue())
+                            .createRecords();
             rabbitMQSender.send(records);
         }
         return "Message sent to the RabbitMQ successfully";
